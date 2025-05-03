@@ -12,7 +12,9 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  "origin":"https://frontend-ecommerce-intern.vercel.app"
+}));
 app.use(express.json());
 
 const MONGODB_URI = process.env.MONGODB_URI;
