@@ -13,8 +13,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  "origin":"https://frontend-ecommerce-intern.vercel.app"
-}));
+  "origin":"https://frontend-ecommerce-intern.vercel.app",
+  credentials:true
+}));  
 app.use(express.json());
 
 const MONGODB_URI = process.env.MONGODB_URI;
