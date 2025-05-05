@@ -3,25 +3,41 @@ const Product = require('../models/productModel');
 
 exports.getProducts = async (req, res) => {
   try {
-    const { category, search } = req.query;
+    const { category, search, page = 1, limit = 5 } = req.query;
+
+    // Set default values for pagination if not provided
+    const skip = (page - 1) * limit;
+
     let query = {};
-    
+
     if (category) {
       query.category = category;
     }
-    
-   
+
     if (search) {
       query.name = { $regex: search, $options: 'i' };
     }
-    
-    const products = await Product.find(query);
-    res.json(products);
+
+    // Get products with pagination
+    const products = await Product.find(query).skip(skip).limit(Number(limit));
+
+    // Get total count of products matching the query
+    const totalCount = await Product.countDocuments(query);
+
+    // Calculate total number of pages
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.json({
+      products,
+      totalPages,
+      totalCount,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 exports.getProductById = async (req, res) => {
   try {
